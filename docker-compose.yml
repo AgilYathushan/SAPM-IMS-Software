@@ -1,0 +1,336 @@
+# ============================================================================
+# Docker Compose Configuration
+# ============================================================================
+# Orchestrates all services for the Image Management System
+# Run: docker-compose up -d (to start all services)
+# Run: docker-compose down (to stop all services)
+
+version: '3.8'
+
+services:
+  # ========================================================================
+  # PostgreSQL Database Service
+  # ========================================================================
+  # Stores all application data (users, patients, reports, bills, etc.)
+  # Uses separate schemas for each microservice (SOA pattern)
+  postgres:
+    image: postgres:15-alpine
+    container_name: ims-postgres
+    environment:
+      POSTGRES_USER: ims_user
+      POSTGRES_PASSWORD: ims_password
+      POSTGRES_DB: ims_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - ims-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ims_user -d ims_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MinIO Object Storage
+  minio:
+    image: minio/minio:latest
+    container_name: ims-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio-data:/data
+    networks:
+      - ims-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  # ========================================================================
+  # FastAPI API Gateway Service
+  # ========================================================================
+  # Routes all API requests to appropriate backend services
+  # Handles CORS, request proxying, and routing
+  
+  api-gateway:
+    build:
+      context: ./services/api-gateway
+      dockerfile: Dockerfile
+    container_name: ims-api-gateway
+    environment:
+      CORS_ORIGINS: http://localhost:3000
+    ports:
+      - "8000:8000"  # API Gateway port
+    volumes:
+      - ./services/api-gateway:/app
+    networks:
+      - ims-network
+    depends_on:
+      - auth-service
+      - user-service
+      - patient-service
+      - medical-staff-service
+      - medical-image-service
+      - diagnostic-report-service
+      - billing-service
+      - workflow-service
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ========================================================================
+  # SOA Backend Services
+  # ========================================================================
+  # Each service runs independently on its own port with its own Docker container
+  
+  # Auth Service - Authentication and Authorization
+  auth-service:
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile
+    container_name: ims-auth-service
+    environment:
+      DATABASE_URL: postgresql://ims_user:ims_password@postgres:5432/ims_db
+      SECRET_KEY: your-secret-key-change-in-production-use-env-var
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      API_V1_PREFIX: /api/v1
+      LOG_LEVEL: INFO
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./services/auth-service:/app
+    networks:
+      - ims-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # User Service - User Management
+  user-service:
+    build:
+      context: ./services/user-service
+      dockerfile: Dockerfile
+    container_name: ims-user-service
+    environment:
+      DATABASE_URL: postgresql://ims_user:ims_password@postgres:5432/ims_db
+      SECRET_KEY: your-secret-key-change-in-production-use-env-var
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      API_V1_PREFIX: /api/v1
+      LOG_LEVEL: INFO
+    ports:
+      - "5002:5002"
+    volumes:
+      - ./services/user-service:/app
+    networks:
+      - ims-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Patient Service - Patient Records Management
+  patient-service:
+    build:
+      context: ./services/patient-service
+      dockerfile: Dockerfile
+    container_name: ims-patient-service
+    environment:
+      DATABASE_URL: postgresql://ims_user:ims_password@postgres:5432/ims_db
+      SECRET_KEY: your-secret-key-change-in-production-use-env-var
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      API_V1_PREFIX: /api/v1
+      LOG_LEVEL: INFO
+    ports:
+      - "5003:5003"
+    volumes:
+      - ./services/patient-service:/app
+    networks:
+      - ims-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Medical Staff Service - Medical Staff Management
+  medical-staff-service:
+    build:
+      context: ./services/medical-staff-service
+      dockerfile: Dockerfile
+    container_name: ims-medical-staff-service
+    environment:
+      DATABASE_URL: postgresql://ims_user:ims_password@postgres:5432/ims_db
+      SECRET_KEY: your-secret-key-change-in-production-use-env-var
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      API_V1_PREFIX: /api/v1
+      LOG_LEVEL: INFO
+    ports:
+      - "5004:5004"
+    volumes:
+      - ./services/medical-staff-service:/app
+    networks:
+      - ims-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Medical Image Service - Image Storage and Management
+  medical-image-service:
+    build:
+      context: ./services/medical-image-service
+      dockerfile: Dockerfile
+    container_name: ims-medical-image-service
+    environment:
+      DATABASE_URL: postgresql://ims_user:ims_password@postgres:5432/ims_db
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      MINIO_BUCKET_NAME: images
+      SECRET_KEY: your-secret-key-change-in-production-use-env-var
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      API_V1_PREFIX: /api/v1
+      LOG_LEVEL: INFO
+    ports:
+      - "5005:5005"
+    volumes:
+      - ./services/medical-image-service:/app
+    networks:
+      - ims-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
+  # Diagnostic Report Service - Report Creation and Management
+  diagnostic-report-service:
+    build:
+      context: ./services/diagnostic-report-service
+      dockerfile: Dockerfile
+    container_name: ims-diagnostic-report-service
+    environment:
+      DATABASE_URL: postgresql://ims_user:ims_password@postgres:5432/ims_db
+      SECRET_KEY: your-secret-key-change-in-production-use-env-var
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      API_V1_PREFIX: /api/v1
+      LOG_LEVEL: INFO
+    ports:
+      - "5006:5006"
+    volumes:
+      - ./services/diagnostic-report-service:/app
+    networks:
+      - ims-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Billing Service - Billing and Payment Management
+  billing-service:
+    build:
+      context: ./services/billing-service
+      dockerfile: Dockerfile
+    container_name: ims-billing-service
+    environment:
+      DATABASE_URL: postgresql://ims_user:ims_password@postgres:5432/ims_db
+      SECRET_KEY: your-secret-key-change-in-production-use-env-var
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      API_V1_PREFIX: /api/v1
+      LOG_LEVEL: INFO
+    ports:
+      - "5007:5007"
+    volumes:
+      - ./services/billing-service:/app
+    networks:
+      - ims-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Workflow Service - Workflow Step Tracking
+  workflow-service:
+    build:
+      context: ./services/workflow-service
+      dockerfile: Dockerfile
+    container_name: ims-workflow-service
+    environment:
+      DATABASE_URL: postgresql://ims_user:ims_password@postgres:5432/ims_db
+      SECRET_KEY: your-secret-key-change-in-production-use-env-var
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      API_V1_PREFIX: /api/v1
+      LOG_LEVEL: INFO
+    ports:
+      - "5008:5008"
+    volumes:
+      - ./services/workflow-service:/app
+    networks:
+      - ims-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Medical Test Service - Medical Test Request Management
+  medical-test-service:
+    build:
+      context: ./services/medical-test-service
+      dockerfile: Dockerfile
+    container_name: ims-medical-test-service
+    environment:
+      DATABASE_URL: postgresql://ims_user:ims_password@postgres:5432/ims_db
+      SECRET_KEY: your-secret-key-change-in-production-use-env-var
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      API_V1_PREFIX: /api/v1
+      LOG_LEVEL: INFO
+    ports:
+      - "5009:5009"
+    volumes:
+      - ./services/medical-test-service:/app
+    networks:
+      - ims-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ========================================================================
+  # React Frontend Service
+  # ========================================================================
+  # Frontend is now run locally (not in Docker)
+  # To run frontend locally:
+  #   1. cd frontend
+  #   2. npm install
+  #   3. npm start
+  # Frontend will run on http://localhost:3000
+  # API calls will go to http://localhost:8000/api (FastAPI Gateway)
+
+# ============================================================================
+# Docker Volumes
+# ============================================================================
+# Persistent storage for database and object storage data
+# Data persists even when containers are stopped/removed
+volumes:
+  postgres-data:    # PostgreSQL database files
+  minio-data:       # MinIO object storage files
+
+# ============================================================================
+# Docker Networks
+# ============================================================================
+# Internal network for service communication
+# Services can communicate using service names (e.g., backend, postgres)
+networks:
+  ims-network:
+    driver: bridge  # Bridge network - allows containers to communicate
+

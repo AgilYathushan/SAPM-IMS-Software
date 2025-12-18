@@ -1,0 +1,75 @@
+@import '../styles/common.css';
+
+.billing-container {
+  min-height: 100vh;
+  padding: 2rem;
+  background: #f8f9fa;
+}
+
+.billing-card {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.billing-card h2 {
+  color: #20b2aa;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.billing-card h2::before {
+  content: '💰';
+  font-size: 2rem;
+}
+
+.summary-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  padding: 2rem;
+  border-radius: 15px;
+  border: 2px solid #e8ecf1;
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+}
+
+.summary-card:hover {
+  border-color: #20b2aa;
+  box-shadow: 0 4px 12px rgba(32, 178, 170, 0.1);
+}
+
+.summary-card h3 {
+  color: #20b2aa;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.bills-list h3 {
+  color: #20b2aa;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.info-message {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.info-message.error-message {
+  color: #dc3545;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  padding: 1rem;
+}
+

@@ -1,0 +1,46 @@
+"""
+Medical Staff Service - Main FastAPI Application Entry Point
+Handles medical staff management
+"""
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.exc import NoReferencedTableError
+from app.core.config import settings
+from app.core.database import engine, Base
+from app.api.v1 import router
+# Import models to register them with Base.metadata
+from app.models.medical_staff import MedicalStaff
+
+# Database Initialization with error handling for cross-schema foreign keys
+# Create tables individually to handle foreign key issues gracefully
+try:
+    # Create MedicalStaff table
+    MedicalStaff.__table__.create(bind=engine, checkfirst=True)
+except Exception as e:
+    print(f"Warning creating MedicalStaff table: {e}")
+
+app = FastAPI(
+    title="Medical Staff Service API",
+    description="Medical Staff Management Service for IMS",
+    version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(router, prefix=settings.API_V1_PREFIX)
+
+@app.get("/")
+async def root():
+    return {"service": "medical-staff-service", "status": "running"}
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "service": "medical-staff-service"}
+

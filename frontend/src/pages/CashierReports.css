@@ -1,0 +1,14 @@
+/* Cashier Reports Page Styles */
+
+.cashier-reports-container {
+  padding: 24px;
+}
+
+.report-card {
+  margin-bottom: 16px;
+}
+
+.create-bill-button {
+  margin-top: 20px;
+}
+

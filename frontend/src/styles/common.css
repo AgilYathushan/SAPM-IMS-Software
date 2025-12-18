@@ -1,0 +1,274 @@
+/* Common Modern Styles for All Pages */
+
+.page-container {
+  min-height: calc(100vh - 80px);
+  padding: 3rem 2rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+}
+
+.page-card {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.page-title {
+  color: #20b2aa;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.page-title::before {
+  content: '📋';
+  font-size: 2rem;
+}
+
+.modern-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.modern-form-group label {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: #333;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.modern-input,
+.modern-select,
+.modern-textarea {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: #fafafa;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.modern-input:focus,
+.modern-select:focus,
+.modern-textarea:focus {
+  outline: none;
+  border-color: #20b2aa;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(32, 178, 170, 0.1);
+}
+
+.modern-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.modern-button {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #20b2aa 0%, #17a2b8 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 12px rgba(32, 178, 170, 0.3);
+}
+
+.modern-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(32, 178, 170, 0.4);
+}
+
+.modern-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.modern-button-secondary {
+  background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.modern-button-secondary:hover:not(:disabled) {
+  box-shadow: 0 6px 16px rgba(108, 117, 125, 0.4);
+}
+
+.modern-message {
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  border-left: 4px solid;
+}
+
+.error-message {
+  background: #fee;
+  color: #c33;
+  border-color: #c33;
+}
+
+.success-message {
+  background: #efe;
+  color: #2d7d32;
+  border-color: #2d7d32;
+}
+
+.info-message {
+  background: #e3f2fd;
+  color: #1976d2;
+  border-color: #1976d2;
+}
+
+.modern-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 1.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.modern-table thead {
+  background: linear-gradient(135deg, #20b2aa 0%, #17a2b8 100%);
+  color: white;
+}
+
+.modern-table th {
+  padding: 1rem 1.25rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.modern-table td {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e8ecf1;
+  color: #333;
+}
+
+.modern-table tbody tr {
+  transition: background 0.2s ease;
+}
+
+.modern-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.modern-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.modern-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 2px solid #e8ecf1;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+  border-color: #20b2aa;
+  box-shadow: 0 4px 12px rgba(32, 178, 170, 0.1);
+}
+
+.modern-card h3 {
+  color: #20b2aa;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.modern-summary-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e8ecf1;
+  font-size: 1rem;
+}
+
+.modern-summary-item:last-child {
+  border-bottom: none;
+}
+
+.modern-summary-item span:first-child {
+  color: #666;
+  font-weight: 500;
+}
+
+.modern-summary-item span:last-child {
+  color: #20b2aa;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.file-upload-area {
+  border: 2px dashed #20b2aa;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  background: #f0f9f8;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.file-upload-area:hover {
+  background: #e0f4f2;
+  border-color: #17a2b8;
+}
+
+.file-upload-area input[type="file"] {
+  display: none;
+}
+
+.file-upload-label {
+  display: block;
+  cursor: pointer;
+  color: #20b2aa;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.file-upload-label:hover {
+  color: #17a2b8;
+}
+
+@media (max-width: 768px) {
+  .page-container {
+    padding: 2rem 1rem;
+  }
+
+  .page-card {
+    padding: 1.5rem;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .modern-table {
+    font-size: 0.9rem;
+  }
+
+  .modern-table th,
+  .modern-table td {
+    padding: 0.75rem 0.5rem;
+  }
+}
+

@@ -1,0 +1,21 @@
+/* Layout Styles */
+
+.layout-container {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.layout-content {
+  flex: 1;
+  margin-left: 260px;
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .layout-content {
+    margin-left: 70px;
+  }
+}

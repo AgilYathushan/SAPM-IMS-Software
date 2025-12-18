@@ -1,0 +1,218 @@
+/* Minimalist Sign In Design - Horizontal Layout */
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+  background: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Diagonal stripe pattern on left side */
+.auth-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 66.666%;
+  height: 100%;
+  background: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 20px,
+      rgba(32, 178, 170, 0.03) 20px,
+      rgba(32, 178, 170, 0.03) 40px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.auth-right-panel {
+  width: 100%;
+  max-width: 1200px;
+  padding: 3rem;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-form-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.auth-form-container h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.auth-error-message {
+  background: #fee;
+  color: #c33;
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  border-left: 4px solid #c33;
+}
+
+/* Form - Horizontal Layout */
+.auth-form-container form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Input fields - side by side for login, stacked for register */
+.auth-form-container form input,
+.auth-form-container form select {
+  flex: 1 1 auto;
+  min-width: 180px;
+  padding: 0.875rem 1rem;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #ffffff;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+/* For register mode, stack fields vertically */
+.auth-form-container form input[name="name"],
+.auth-form-container form input[name="email"],
+.auth-form-container form select[name="role"] {
+  flex: 1 1 100%;
+  min-width: 100%;
+}
+
+.auth-form-container form input:focus,
+.auth-form-container form select:focus {
+  outline: none;
+  border-color: #20b2aa;
+  box-shadow: 0 0 0 2px rgba(32, 178, 170, 0.1);
+}
+
+.auth-form-container form input::placeholder {
+  color: #999;
+}
+
+/* Login/Register button - teal background */
+.auth-form-container form button[type="submit"] {
+  padding: 0.875rem 2rem;
+  background: #20b2aa;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-width: 120px;
+}
+
+.auth-form-container form button[type="submit"]:hover:not(:disabled) {
+  background: #17a2b8;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(32, 178, 170, 0.3);
+}
+
+.auth-form-container form button[type="submit"]:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.auth-form-container form button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Links section */
+.auth-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.auth-link a {
+  color: #20b2aa;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.auth-link a:hover {
+  color: #17a2b8;
+  text-decoration: underline;
+}
+
+.auth-link p {
+  margin: 0;
+  color: #666;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.auth-link button {
+  background: #20b2aa;
+  color: #ffffff;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auth-link button:hover {
+  background: #17a2b8;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(32, 178, 170, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+  .auth-form-container h2 {
+    font-size: 2rem;
+  }
+
+  .auth-form-container form {
+    flex-direction: column;
+  }
+
+  .auth-form-container form input,
+  .auth-form-container form select,
+  .auth-form-container form button[type="submit"] {
+    width: 100%;
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .auth-right-panel {
+    padding: 2rem 1.5rem;
+  }
+
+  .auth-form-container h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .auth-container::before {
+    width: 100%;
+    opacity: 0.5;
+  }
+}
